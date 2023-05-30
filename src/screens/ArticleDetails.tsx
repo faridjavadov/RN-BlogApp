@@ -1,19 +1,24 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteArticle, getDataById } from '../redux/slices/ArticlesSlice';
+import { addFavorite, deleteArticle, getDataById } from '../redux/slices/ArticlesSlice';
 import { AppDispatch, StateType } from '../redux/store/store';
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 const ArticleDetails = ({ navigation, props, route }: any) => {
   const dispatch = useDispatch<AppDispatch>();
   const id = route.params
   const [deleted, setdeleted] = useState(false)
-  const { data, blog, status, theme } = useSelector((state: StateType) => state.ArticlesSlice)
+  const { data, blog, status, theme,favorite } = useSelector((state: StateType) => state.ArticlesSlice)
 
   useEffect(() => {
     dispatch(getDataById(id))
   }, [blog])
+
+  const AddFavorite = () =>{
+      dispatch(addFavorite(blog))
+  } 
 
 
   const EditArticle = (item: any) => {
@@ -51,8 +56,12 @@ const ArticleDetails = ({ navigation, props, route }: any) => {
         <View style={styles.article}>
           <Text style={[styles.articletext,{ color: theme == 'light'?'black':'white'}]}>{blog.content}</Text>
         </View>
-        <View>
+        <View style={{flexDirection:'row',alignSelf:'flex-end'}}>
+          <TouchableOpacity onPress={AddFavorite}>
+            <MaterialIcons  style ={{ alignSelf:'flex-end'}}size={30} name='favorite' color={favorite.find((c:any)=>c.id == blog.id)?'red':(theme == 'light'?'black':'white')}/>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => EditArticle(blog)}>
+
             <AntDesign style={{ alignSelf: 'flex-end', marginTop: '4%' }} name='edit' size={30} color={theme=='light'?'black':'white'} />
           </TouchableOpacity>
         </View>

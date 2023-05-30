@@ -4,18 +4,22 @@ import axios from "axios"
 
 interface ArticleState {
     data: any,
+    copydata:any,
     status: 'pending' | 'fulfilled' | 'rejected' | null,
     error: any,
     blog:any
-    theme:'dark'| 'light'
+    theme:'dark'| 'light',
+    favorite:any
 }
 
 const InitialState :ArticleState = {
     data: [],
+    copydata:[],
     status: null,
     error: null,
     blog:{},
-    theme:'light'
+    theme:'light',
+    favorite:[]
 }
 
 export const getData = createAsyncThunk('get/articles',async()=>{
@@ -52,7 +56,20 @@ const ArticleSlice = createSlice({
             state.theme = state.theme == 'light'?'dark':'light'
             console.log(state.theme);
             
+        },
+        addFavorite:(state,action)=>{
+            if(state.favorite.find((c:any)=>c.id == action.payload.id)){
+               state.favorite = state.favorite.filter((c:any)=>c.id != action.payload.id)    
+            }
+            else{
+                state.favorite.push(action.payload)
+            }
+        },
+        SearchbyId:(state,action)=>{
+            state.data = state.copydata.filter((c:any)=>c.title.toLowerCase().includes(action.payload.toLowerCase()))
+
         }
+     
     },
     extraReducers: builder => {
 
@@ -61,6 +78,7 @@ const ArticleSlice = createSlice({
         }).addCase(getData.fulfilled,(state,action)=>{
             state.status = 'fulfilled'        
             state.data = action.payload
+            state.copydata = action.payload
         }).addCase(getData.rejected,(state)=>{
             state.status = 'rejected'
         })
@@ -115,4 +133,4 @@ const ArticleSlice = createSlice({
 
 export default ArticleSlice.reducer
 
-export const {changeTheme} = ArticleSlice.actions
+export const {changeTheme,addFavorite,SearchbyId} = ArticleSlice.actions

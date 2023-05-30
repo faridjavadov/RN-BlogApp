@@ -10,6 +10,7 @@ import AddScreen from '../../screens/AddScreen';
 import EditScreen from '../../screens/EditScreen';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../redux/store/store';
+import FavoriteScreen from '../../screens/FavoriteScreen';
 
 
 const Tab = createBottomTabNavigator();
@@ -54,6 +55,15 @@ const TabNavigation = () => {
           return (
             <View >
               <AntDesign name='edit' size={30} color={focused ? (theme == 'light'?'black':'white') : 'lightgray'} />
+            </View>
+          )
+        }
+      }} />
+      <Tab.Screen name='FavoriteScreen' component={FavoriteScreen} options={{
+        tabBarIcon: ({ focused }) => {
+          return (
+            <View >
+              <MaterialIcons name='favorite-outline' size={30} color={focused ? (theme == 'light'?'black':'white') : 'lightgray'} />
             </View>
           )
         }
